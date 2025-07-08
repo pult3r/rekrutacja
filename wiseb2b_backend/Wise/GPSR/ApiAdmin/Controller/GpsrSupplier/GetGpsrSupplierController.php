@@ -11,6 +11,7 @@ use Wise\Core\ApiAdmin\Attributes\OpenApi\EndpointType\OAGet;
 use Wise\Core\ApiAdmin\Controller\AbstractGetListAdminApiController;
 use Wise\Core\Security\Constants\ScopeNames;
 use Wise\GPSR\ApiAdmin\Service\GpsrSupplier\Interfaces\GetGpsrSupplierServiceInterface;
+use Wise\GPSR\ApiAdmin\Dto\GpsrSupplier\GetGpsrSuppliersDto; 
 
 class GetGpsrSupplierController extends AbstractGetListAdminApiController
 {
@@ -33,9 +34,20 @@ class GetGpsrSupplierController extends AbstractGetListAdminApiController
         methods: ['GET']
     )]
     #[OAGet(
-        description: 'Zwraca listę dostawców',
+        description: 'Returns a list of suppliers', 
         tags: ['Supplier'],
-        responseDto: new OA\JsonContent(ref: "#/components/schemas/GetGpsrSuppliersDto", type: "object")
+        responseDtoClass: GetGpsrSuppliersDto::class,
+        isArray: true,
+        
+        parameters: [
+            new OA\Parameter(
+                name: 'symbol',
+                in: 'query', 
+                description: 'Filter by supplier symbol', 
+                required: false, 
+                schema: new OA\Schema(type: 'string', example: 'WiseB2B') 
+            )
+        ]
     )]
     public function getAction(Request $request): JsonResponse
     {
